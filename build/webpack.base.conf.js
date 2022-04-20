@@ -41,11 +41,19 @@ module.exports = {
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
       '@': resolve('src'),
+      '@setCustomTheme': '@zougt/theme-css-extract-webpack-plugin/dist/setCustomTheme.js'
     }
   },
   module: {
     rules: [
-      ...(config.dev.useEslint ? [createLintingRule()] : []),
+      // ...(config.dev.useEslint ? [createLintingRule()] : []),
+      {
+        test: /setCustomTheme\.js$/,
+        enforce: "pre",
+        loader: require.resolve(
+          "@zougt/theme-css-extract-webpack-plugin/dist/hot-loader/index.js"
+        ),
+      },
       {
         test: /\.vue$/,
         loader: 'vue-loader',

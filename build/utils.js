@@ -5,6 +5,22 @@ const config = require('../config')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const packageConfig = require('../package.json')
 
+
+const { getSass } = require("@zougt/some-loader-utils");
+const multipleScopeVars = [
+  {
+    // 必需
+    scopeName: "theme-mauve",
+    // path和varsContent选一个
+    path: path.resolve("src/theme/mauve-vars.scss"),
+    // varsContent:`@--color-primary:#9c26b;`
+  },
+  {
+    scopeName: 'theme-red',
+    path: path.resolve('src/theme/theme-red.scss'),
+},
+];
+exports.multipleScopeVars = multipleScopeVars;
 exports.assetsPath = function (_path) {
   const assetsSubDirectory = process.env.NODE_ENV === 'production'
     ? config.build.assetsSubDirectory
@@ -31,7 +47,7 @@ exports.cssLoaders = function (options) {
   }
 
   // generate loader string to be used with extract text plugin
-  function generateLoaders (loader, loaderOptions) {
+  function generateLoaders(loader, loaderOptions) {
     const loaders = options.usePostCSS ? [cssLoader, postcssLoader] : [cssLoader]
 
     if (loader) {
@@ -63,8 +79,26 @@ exports.cssLoaders = function (options) {
     css: generateLoaders(),
     postcss: generateLoaders(),
     less: generateLoaders('less'),
-    sass: generateLoaders('sass', { indentedSyntax: true }),
-    scss: generateLoaders('sass'),
+    sass: generateLoaders('sass', {
+      indentedSyntax: true, implementation: getSass({
+        // getMultipleScopeVars优先于 sassOptions.multipleScopeVars
+        getMultipleScopeVars: (v) => {
+          console.log(v)
+
+          return multipleScopeVars
+        },
+      })
+    }),
+    scss: generateLoaders('sass', {
+      implementation: getSass({
+        // getMultipleScopeVars优先于 sassOptions.multipleScopeVars
+        getMultipleScopeVars: (v) => {
+          console.log(v)
+
+          return multipleScopeVars
+        },
+      })
+    }),
     stylus: generateLoaders('stylus'),
     styl: generateLoaders('stylus')
   }

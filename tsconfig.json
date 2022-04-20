@@ -15,6 +15,10 @@
       "es2015.promise",
       "scripthost"
     ],
+    "baseUrl":"./",
+    "paths": {
+      "@setCustomTheme": ["@zougt/theme-css-extract-webpack-plugin/dist/setCustomTheme.js"]
+    } ,
     "sourceMap": true,
     "pretty": true,
     "strictFunctionTypes": false,
